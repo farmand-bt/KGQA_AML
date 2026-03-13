@@ -1,0 +1,7 @@
+streamlit
+spacy
+spacy-dbpedia-spotlight
+SPARQLWrapper
+openai
+requests
+python-dotenv

@@ -1,8 +1,9 @@
 # KGQA_AML — Knowledge Graph Question Answering System
 
-A hybrid pipeline that answers natural language questions using the [DBpedia](https://www.dbpedia.org/) Knowledge Graph. Built as a course project for **Advanced Machine Learning** (WS 2025/26) at the University of Göttingen.
+A hybrid pipeline that answers natural language questions using the [DBpedia](https://www.dbpedia.org/) Knowledge Graph. Built as a course project for **Advanced Machine Learning** (WS 2025/26) at the Leuphana University of Lüneburg.
 
 **Author:** Farmand Bazdiditehrani
+
 **Instructors:** Debayan Banerjee (Postdoc), Kai Moltzen (PhD student)
 
 ## Architecture
