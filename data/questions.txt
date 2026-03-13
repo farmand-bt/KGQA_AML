@@ -1,0 +1,8 @@
+# Working Questions (tested against live DBpedia)
+Who is the president of France?
+What is the capital of Germany?
+When was Albert Einstein born?
+Who wrote Romeo and Juliet?
+What is the population of Tokyo?
+
+# Non-Working Questions (to be filled after testing)
