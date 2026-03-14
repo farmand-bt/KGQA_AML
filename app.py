@@ -13,9 +13,27 @@ api_key_set = bool(os.getenv("GWDG_API_KEY"))
 if not api_key_set:
     st.warning("GWDG API key not configured. Set GWDG_API_KEY in your .env file.")
 
+# Example questions
+examples = [
+    "Who founded Microsoft?",
+    "What language is spoken in Brazil?",
+    "Where was Marie Curie born?",
+    "Who directed Inception?",
+    "What is the currency of Japan?",
+]
+st.markdown("**Try an example:**")
+cols = st.columns(len(examples))
+for i, ex in enumerate(examples):
+    if cols[i].button(ex.split("?")[0].split()[-1], key=f"ex_{i}", help=ex):
+        st.session_state["question"] = ex
+
 # Input
-question = st.text_input("Your question:", placeholder="Who is the president of France?")
-ask = st.button("Ask", disabled=not api_key_set or not question)
+question = st.text_input(
+    "Your question:",
+    value=st.session_state.get("question", ""),
+    placeholder="Who is the president of France?",
+)
+ask = st.button("Ask", disabled=not api_key_set or not question, type="primary")
 
 if ask and question:
     from src.pipeline import run_pipeline
@@ -31,8 +49,11 @@ if ask and question:
     if result["error"]:
         st.error(result["error"])
 
+    # Metadata
+    st.caption(f"Completed in {result['time_s']}s ({result['attempts']} attempt(s))")
+
     # Debug details
-    with st.expander("Show details"):
+    with st.expander("Show pipeline details"):
         st.markdown("**Linked Entities:**")
         if result["entities"]:
             for e in result["entities"]:
@@ -45,7 +66,10 @@ if ask and question:
 
         st.markdown(f"**Candidate Relations:** {len(result['relations'])} found")
         if result["relations"]:
-            st.code("\n".join(result["relations"][:15]), language=None)
+            relation_display = "\n".join(
+                r["short"] for r in result["relations"][:20]
+            )
+            st.code(relation_display, language=None)
 
         if result["sparql"] and result["sparql"].get("query"):
             st.markdown("**Generated SPARQL:**")
