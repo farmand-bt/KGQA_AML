@@ -77,7 +77,7 @@ def run_pipeline(question):
         return result
 
     # Step 5: Answer Formatting
-    answer = format_answer(question, exec_result["results"])
+    answer = format_answer(question, exec_result["results"], sparql_result.get("query"))
     result["answer"] = answer
     result["time_s"] = round(time.time() - start_time, 2)
 
