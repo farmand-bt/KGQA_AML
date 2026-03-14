@@ -4,7 +4,8 @@ from src.relation_linker import get_candidate_relations
 from src.sparql_generator import generate_sparql
 from src.sparql_executor import execute_sparql
 from src.answer_formatter import format_answer
-MAX_SPARQL_RETRIES = 1
+
+MAX_SPARQL_RETRIES = 2
 
 
 def run_pipeline(question):
@@ -13,7 +14,7 @@ def run_pipeline(question):
     result = {
         "question": question,
         "entities": [],
-        "relations": [],
+        "relations": {},
         "sparql": None,
         "results": None,
         "answer": None,
@@ -56,7 +57,11 @@ def run_pipeline(question):
 
         # Check for empty results (likely wrong query)
         if not exec_result["results"]:
-            error_feedback = "Query returned 0 results. Try different predicates or query structure."
+            error_feedback = (
+                f"The query returned 0 results:\n{sparql_result['query']}\n"
+                "This predicate does not work. Try DIFFERENT predicates from the candidate list. "
+                "If you used dbo: predicates, try dbp: ones instead (e.g., dbp:incumbent, dbp:leader)."
+            )
             continue
 
         # Success — break out of retry loop

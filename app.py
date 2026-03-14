@@ -64,12 +64,14 @@ if ask and question:
         else:
             st.write("None found.")
 
-        st.markdown(f"**Candidate Relations:** {len(result['relations'])} found")
-        if result["relations"]:
-            relation_display = "\n".join(
-                r["short"] for r in result["relations"][:20]
-            )
-            st.code(relation_display, language=None)
+        st.markdown("**Candidate Relations:**")
+        per_entity = result["relations"].get("per_entity", {})
+        if per_entity:
+            for entity_short, rels in per_entity.items():
+                st.markdown(f"*{entity_short}* ({len(rels)} predicates):")
+                st.code("\n".join(r["short"] for r in rels[:15]), language=None)
+        else:
+            st.write("None found.")
 
         if result["sparql"] and result["sparql"].get("query"):
             st.markdown("**Generated SPARQL:**")

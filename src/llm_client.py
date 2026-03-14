@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 GWDG_BASE_URL = "https://chat-ai.academiccloud.de/v1"
-DEFAULT_MODEL = "meta-llama-3.1-8b-instruct"
+DEFAULT_MODEL = "llama-3.3-70b-instruct"
 
 _client = None
 

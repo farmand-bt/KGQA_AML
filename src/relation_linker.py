@@ -43,45 +43,63 @@ def _shorten_uri(uri):
     return uri
 
 
-def get_candidate_relations(entity_uris, max_per_entity=50):
+def _is_excluded(uri):
+    if uri in EXCLUDED_PREDICATES:
+        return True
+    return any(uri.startswith(prefix) for prefix in EXCLUDED_PREFIXES)
+
+
+def _fetch_relations_for_entity(uri, max_per_entity=50):
+    """Fetch 1-hop predicates for a single entity. Returns list of predicate URIs."""
+    relations = set()
+
+    query_out = f"""
+    SELECT DISTINCT ?p WHERE {{
+        <{uri}> ?p ?o .
+    }} LIMIT {max_per_entity}
     """
-    Fetch 1-hop predicates (outgoing + incoming) for each entity.
-    Returns list of dicts: [{"uri": full_uri, "short": "dbo:birthDate"}, ...]
+    result = execute_sparql(query_out)
+    if result["success"]:
+        for row in result["results"]:
+            relations.add(row["p"])
+
+    query_in = f"""
+    SELECT DISTINCT ?p WHERE {{
+        ?s ?p <{uri}> .
+    }} LIMIT {max_per_entity}
     """
-    all_relations = set()
+    result = execute_sparql(query_in)
+    if result["success"]:
+        for row in result["results"]:
+            relations.add(row["p"])
 
-    for uri in entity_uris:
-        query_out = f"""
-        SELECT DISTINCT ?p WHERE {{
-            <{uri}> ?p ?o .
-        }} LIMIT {max_per_entity}
-        """
-        result = execute_sparql(query_out)
-        if result["success"]:
-            for row in result["results"]:
-                all_relations.add(row["p"])
-
-        query_in = f"""
-        SELECT DISTINCT ?p WHERE {{
-            ?s ?p <{uri}> .
-        }} LIMIT {max_per_entity}
-        """
-        result = execute_sparql(query_in)
-        if result["success"]:
-            for row in result["results"]:
-                all_relations.add(row["p"])
-
-    filtered = []
-    for r in all_relations:
-        if r in EXCLUDED_PREDICATES:
-            continue
-        if any(r.startswith(prefix) for prefix in EXCLUDED_PREFIXES):
-            continue
-        filtered.append(r)
-
+    filtered = [r for r in relations if not _is_excluded(r)]
     filtered.sort(key=lambda r: (
         0 if "dbpedia.org/ontology" in r else
         1 if "dbpedia.org/property" in r else 2
     ))
+    return filtered
 
-    return [{"uri": r, "short": _shorten_uri(r)} for r in filtered]
+
+def get_candidate_relations(entity_uris, max_per_entity=50):
+    """
+    Fetch 1-hop predicates (outgoing + incoming) for each entity.
+    Returns dict mapping entity URI to its relations, plus a flat list.
+    """
+    per_entity = {}
+    all_relations = set()
+
+    for uri in entity_uris:
+        rels = _fetch_relations_for_entity(uri, max_per_entity)
+        short_name = _shorten_uri(uri)
+        per_entity[short_name] = [{"uri": r, "short": _shorten_uri(r)} for r in rels]
+        all_relations.update(rels)
+
+    # Flat sorted list for backward compatibility
+    flat = sorted(all_relations, key=lambda r: (
+        0 if "dbpedia.org/ontology" in r else
+        1 if "dbpedia.org/property" in r else 2
+    ))
+    flat_list = [{"uri": r, "short": _shorten_uri(r)} for r in flat]
+
+    return {"per_entity": per_entity, "flat": flat_list}

@@ -2,11 +2,9 @@
 
 A hybrid pipeline that answers natural language questions using the [DBpedia](https://www.dbpedia.org/) Knowledge Graph. Built as a course project for **Advanced Machine Learning** (WS 2025/26) at the Leuphana University of Lüneburg.
 
-**Author:** Farmand Bazdiditehrani (4005007)
+**Author:** Farmand Bazdiditehrani (4005007) - March 2026
 
 **Instructors:** Dr. Debayan Banerjee and Kai Moltzen
-
-March 2026
 
 You can access the Streamlit UI here.
 
@@ -14,40 +12,38 @@ You can access the Streamlit UI here.
 
 ```mermaid
 flowchart TD
-    subgraph UI["Streamlit Web UI"]
-        Q["User Question"]
+    ST["Streamlit App UI"]
+    ST --> Q["User Question"]
 
-        subgraph Pipeline
-            EL["<b>1. Entity Linking</b><br>DBpedia Spotlight<br><i>external & free API</i>"]
-            RL["<b>2. Relation Linking</b><br>Fetch 1-hop predicates<br><i>filter + rank by type</i>"]
-            SG["<b>3. SPARQL Generation</b><br>LLM builds query from<br><i>entities + relations + few-shot prompt</i>"]
-            QE["<b>4. Query Execution</b><br>SPARQLWrapper sends query<br><i>to DBpedia SPARQL endpoint</i>"]
-            AF["<b>5. Answer Formatting</b><br>Simple results: extract value directly programmatically<br><i>Complex results: LLM summarizes</i>"]
-
-            EL --> RL --> SG --> QE
-            QE -->|"retry with error feedback"| SG
-            QE -->|"results found"| AF
-            QE -->|"all retries failed"| ERR["Error Message"]
-        end
-
+    subgraph Pipeline
         Q --> EL
-        AF --> A["Answer"]
-        ERR --> A
+        EL["<b>1. Entity Linking</b><br>DBpedia Spotlight API"]
+        EL --> RL
+        EL -->|"entity URIs"| SG
+        RL["<b>2. Relation Linking</b><br>1-hop predicate filtering"]
+        RL -->|"candidate predicates"| SG
+        SG["<b>3. SPARQL Generation</b><br>LLM + few-shot prompt"]
+        SG --> QE
+        QE["<b>4. Query Execution</b><br>SPARQLWrapper → DBpedia SPARQL endpoint"]
+        QE -->|"results found (success)"| AF
+        QE -->|"retry with error feedback"| SG
+        QE -->|"all retries failed"| ERR["Error Message"]
+        AF["<b>5. Answer Formatting</b><br>LLM or Programmatic (direct extraction)"]
     end
 
-    EL -. "entity URIs" .-> SG
-    RL -. "candidate predicates" .-> SG
+    AF --> A["Answer"]
+    ERR --> A
 
-    style UI fill:#f9f9f9,stroke:#2ecc71,color:#333
-    style Pipeline fill:#fff,stroke:#ccc
+    style ST fill:#f9cc59,stroke:#e67e22,color:#000
     style Q fill:#4a90d9,stroke:#2c5f8a,color:#fff
     style A fill:#2ecc71,stroke:#1a9c54,color:#fff
-    style EL fill:#f0f4ff,stroke:#4a90d9
-    style RL fill:#f0f4ff,stroke:#4a90d9
-    style SG fill:#fff3e0,stroke:#e67e22
-    style QE fill:#f0f4ff,stroke:#4a90d9
-    style AF fill:#fff3e0,stroke:#e67e22
-    style ERR fill:#ffebee,stroke:#e74c3c
+    style EL fill:#f0f4ff,stroke:#4a90d9,color:#000
+    style RL fill:#f0f4ff,stroke:#4a90d9,color:#000
+    style SG fill:#fff3e0,stroke:#e67e22,color:#000
+    style QE fill:#f0f4ff,stroke:#4a90d9,color:#000
+    style AF fill:#fff3e0,stroke:#e67e22,color:#000
+    style ERR fill:#ffebee,stroke:#e74c3c,color:#000
+    style Pipeline fill:#f9f9f9,stroke:#ccc,color:#000
 ```
 
 ### Key Design Decisions
