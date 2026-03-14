@@ -17,10 +17,37 @@ EXCLUDED_PREDICATES = {
     "http://xmlns.com/foaf/0.1/isPrimaryTopicOf",
     "http://xmlns.com/foaf/0.1/depiction",
     "http://www.w3.org/ns/prov#wasDerivedFrom",
+    "http://dbpedia.org/property/wikiPageUsesTemplate",
 }
+
+EXCLUDED_PREFIXES = (
+    "http://dbpedia.org/ontology/wikiPage",
+    "http://www.w3.org/2002/07/owl#",
+    "http://www.w3.org/ns/prov#",
+)
+
+
+def _shorten_uri(uri):
+    """Convert full URI to prefixed form for readability."""
+    prefixes = {
+        "http://dbpedia.org/ontology/": "dbo:",
+        "http://dbpedia.org/property/": "dbp:",
+        "http://dbpedia.org/resource/": "dbr:",
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#": "rdf:",
+        "http://www.w3.org/2000/01/rdf-schema#": "rdfs:",
+        "http://xmlns.com/foaf/0.1/": "foaf:",
+    }
+    for full, short in prefixes.items():
+        if uri.startswith(full):
+            return short + uri[len(full):]
+    return uri
 
 
 def get_candidate_relations(entity_uris, max_per_entity=50):
+    """
+    Fetch 1-hop predicates (outgoing + incoming) for each entity.
+    Returns list of dicts: [{"uri": full_uri, "short": "dbo:birthDate"}, ...]
+    """
     all_relations = set()
 
     for uri in entity_uris:
@@ -44,9 +71,17 @@ def get_candidate_relations(entity_uris, max_per_entity=50):
             for row in result["results"]:
                 all_relations.add(row["p"])
 
-    filtered = [r for r in all_relations if r not in EXCLUDED_PREDICATES]
+    filtered = []
+    for r in all_relations:
+        if r in EXCLUDED_PREDICATES:
+            continue
+        if any(r.startswith(prefix) for prefix in EXCLUDED_PREFIXES):
+            continue
+        filtered.append(r)
+
     filtered.sort(key=lambda r: (
         0 if "dbpedia.org/ontology" in r else
         1 if "dbpedia.org/property" in r else 2
     ))
-    return filtered
+
+    return [{"uri": r, "short": _shorten_uri(r)} for r in filtered]

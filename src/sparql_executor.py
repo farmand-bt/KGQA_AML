@@ -11,6 +11,10 @@ def execute_sparql(query, timeout=30):
         sparql.setTimeout(timeout)
         response = sparql.query().convert()
 
+        # Handle ASK queries (return boolean)
+        if "boolean" in response:
+            return {"success": True, "results": [{"answer": str(response["boolean"])}]}
+
         bindings = response.get("results", {}).get("bindings", [])
         results = []
         for row in bindings:
