@@ -1,0 +1,410 @@
+{
+  "summary": {
+    "correct": 13,
+    "partial": 4,
+    "failed": 28,
+    "error": 5
+  },
+  "per_question": [
+    {
+      "question": "How many people are there whose children died in Indiana?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 2.7,
+      "sparql_generated": "SELECT (COUNT(DISTINCT ?person) AS ?count) WHERE {\n  ?person dbo:child ?child .\n  ?child dbo:deathPlace dbr:Indiana .\n}",
+      "sparql_ground_truth": "SELECT DISTINCT COUNT(?uri) WHERE { ?x <http://dbpedia.org/ontology/deathPlace> <http://dbpedia.org/resource/Indiana> . ?uri <http://dbpedia.org/ontology/child> ?x  . ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Person>}"
+    },
+    {
+      "question": "Give the name of the  managers of England national under-20 football team and England national under-21 football team?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 15.94,
+      "sparql_generated": "PREFIX dbo: <http://dbpedia.org/ontology/>\nPREFIX dbr: <http://dbpedia.org/resource/>\nPREFIX dbp: <http://dbpedia.org/property/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\nSELECT DISTINCT ?manager ?label\nWHERE {\n  {\n    dbr:England-national-under-20_football_team dbo:coach ?manager .\n    ?manager rdfs:label ?label .\n    FILTER(lang(?label) = \"en\")\n  } UNION {\n    dbr:England-national-under-21_football_team dbo:coach ?manager .\n    ?manager rdfs:label ?label .\n    FILTER(lang(?label) = \"en\")\n  }\n}\nLIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE { ?uri <http://dbpedia.org/property/managerclubs> <http://dbpedia.org/resource/England_national_under-20_football_team> . ?uri <http://dbpedia.org/property/managerclubs> <http://dbpedia.org/resource/England_national_under-21_football_team> . }"
+    },
+    {
+      "question": "How many cities are around the sea in which the the fig tree bay meets?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 1.88,
+      "sparql_generated": "SELECT (COUNT(DISTINCT ?city) AS ?count) WHERE {\n  dbr:Fig_Tree_Bay dbo:location ?sea .\n  ?city dbo:location ?sea .\n  ?city rdf:type dbo:City .\n}",
+      "sparql_ground_truth": "SELECT DISTINCT COUNT(?uri) WHERE { <http://dbpedia.org/resource/Fig_Tree_Bay> <http://dbpedia.org/ontology/inflow> ?x . ?x <http://dbpedia.org/property/cities> ?uri  . ?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Sea>}"
+    },
+    {
+      "question": "is blue lagoon island a part of the bahamas achipelago?",
+      "label": "CORRECT",
+      "overlap": 1.0,
+      "time_s": 1.84,
+      "sparql_generated": "ASK WHERE {\n  dbr:Blue_Lagoon_Island dbo:country dbr:The_Bahamas .\n}",
+      "sparql_ground_truth": "ASK WHERE { <http://dbpedia.org/resource/Blue_Lagoon_Island> <http://dbpedia.org/ontology/archipelago> <http://dbpedia.org/resource/The_Bahamas> }"
+    },
+    {
+      "question": "Name the movies distributed by RKO Pictures and has music composer as Bernard Herrmann?",
+      "label": "CORRECT",
+      "overlap": 1.0,
+      "time_s": 3.51,
+      "sparql_generated": "SELECT DISTINCT ?movie ?label WHERE {\n  ?movie dbo:distributor dbr:RKO_Pictures .\n  ?movie dbo:musicComposer dbr:Bernard_Herrmann .\n  ?movie rdfs:label ?label .\n  FILTER(lang(?label) = \"en\")\n} LIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE {?uri <http://dbpedia.org/property/distributor> <http://dbpedia.org/resource/RKO_Pictures> . ?uri <http://dbpedia.org/ontology/musicComposer> <http://dbpedia.org/resource/Bernard_Herrmann>  . ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Film>}"
+    },
+    {
+      "question": "Did the New Way party merge in the One Israel party?",
+      "label": "ERROR",
+      "overlap": 0,
+      "time_s": 3.03,
+      "sparql_generated": "ASK WHERE {\n  dbr:New_Way_(Israel) dbo:mergedWith dbr:One_Israel .\n}",
+      "sparql_ground_truth": "ASK WHERE { <http://dbpedia.org/resource/New_Way_(Israel)> <http://dbpedia.org/ontology/mergedIntoParty> <http://dbpedia.org/resource/One_Israel> }"
+    },
+    {
+      "question": "How many pole drivers have been there in grand prixes where first driver was Damon Hill?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 2.16,
+      "sparql_generated": "SELECT (COUNT(DISTINCT ?poleDriver) AS ?count) WHERE {\n  dbr:Damon_Hill dbo:firstDriver ?grandPrix .\n  ?grandPrix dbo:poleDriver ?poleDriver .\n}",
+      "sparql_ground_truth": "SELECT DISTINCT COUNT(?uri) WHERE { ?x <http://dbpedia.org/ontology/firstDriver> <http://dbpedia.org/resource/Damon_Hill> . ?x <http://dbpedia.org/ontology/poleDriver> ?uri  . ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/FormulaOneRacer>}"
+    },
+    {
+      "question": "Where are jockeys in Dubai World Cup from?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 2.62,
+      "sparql_generated": "SELECT ?location WHERE {\n  dbr:Dubai_World_Cup dbo:location ?location .\n} LIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE { ?x <http://dbpedia.org/ontology/race> <http://dbpedia.org/resource/Dubai_World_Cup> . ?x <http://dbpedia.org/property/birthPlace> ?uri  . ?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Jockey>}"
+    },
+    {
+      "question": "To which places do the flights go by airlines headquartered in the UK?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 6.46,
+      "sparql_generated": "SELECT DISTINCT ?place ?placeLabel WHERE {\n  ?airline dbo:country dbr:United_Kingdom .\n  ?airline dbp:headquarter ?headquarter .\n  ?headquarter dbo:location ?place .\n  ?place rdfs:label ?placeLabel .\n  FILTER(lang(?placeLabel) = \"en\") .\n} LIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE { ?x <http://dbpedia.org/property/headquarters> <http://dbpedia.org/resource/United_Kingdom> . ?x <http://dbpedia.org/property/destinations> ?uri  . ?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Airline>}"
+    },
+    {
+      "question": "What is the magazine which have been  founded by Ralph J. Gleason?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 32.85,
+      "sparql_generated": "SELECT ?magazine WHERE {\n  dbr:Jackie_Gleason dbo:creator ?magazine .\n} LIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE {?uri <http://dbpedia.org/ontology/founder> <http://dbpedia.org/resource/Ralph_J._Gleason>  . ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Magazine>}"
+    },
+    {
+      "question": "Is Seattle the Ship builder of USS Marmora (IX-189)?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 3.44,
+      "sparql_generated": "ASK WHERE {\n  ?ship dbo:shipBuilder ?builder .\n  ?ship dbo:name \"USS Marmora (IX-189)\" .\n  ?builder dbo:name \"Seattle\" .\n}",
+      "sparql_ground_truth": "ASK WHERE { <http://dbpedia.org/resource/USS_Marmora_(IX-189)> <http://dbpedia.org/property/shipBuilder> <http://dbpedia.org/resource/Seattle> }"
+    },
+    {
+      "question": "Is Tirana the largest city of Albania?",
+      "label": "CORRECT",
+      "overlap": 1.0,
+      "time_s": 2.15,
+      "sparql_generated": "ASK WHERE {\n  dbr:Albania dbo:largestCity dbr:Tirana .\n}",
+      "sparql_ground_truth": "ASK WHERE { <http://dbpedia.org/resource/Albania> <http://dbpedia.org/property/largestCity> <http://dbpedia.org/resource/Tirana> }"
+    },
+    {
+      "question": "In which cities can the beverage related to Barq's be found?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 5.55,
+      "sparql_generated": "SELECT DISTINCT ?city WHERE {\n  dbr:Barq dbo:origin ?origin .\n  ?origin dbo:location ?city .\n  ?city a dbo:City .\n  ?city rdfs:label ?label .\n  FILTER(lang(?label) = \"en\")\n} LIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE { <http://dbpedia.org/resource/Barq's> <http://dbpedia.org/ontology/related> ?x . ?x <http://dbpedia.org/property/locationCity> ?uri  . }"
+    },
+    {
+      "question": "Count everyone who studied at an institute which are in Suburbs?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 1.93,
+      "sparql_generated": "SELECT (COUNT(DISTINCT ?person) AS ?count) WHERE {\n  ?institute dbo:location dbr:Suburbs .\n  ?person dbo:alumniOf ?institute .\n}",
+      "sparql_ground_truth": "SELECT DISTINCT COUNT(?uri) WHERE { ?x <http://dbpedia.org/ontology/campus> <http://dbpedia.org/resource/Suburb> . ?uri <http://dbpedia.org/property/education> ?x  . }"
+    },
+    {
+      "question": "How many television shows have  Fox Broadcasting Company as their channel?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 2.05,
+      "sparql_generated": "SELECT (COUNT(DISTINCT ?show) AS ?count) WHERE {\n  ?show dbo:broadcastNetwork dbr:Fox_Broadcasting_Company .\n}",
+      "sparql_ground_truth": "SELECT DISTINCT COUNT(?uri) WHERE {?uri <http://dbpedia.org/property/channel> <http://dbpedia.org/resource/Fox_Broadcasting_Company>  . ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/TelevisionShow>}"
+    },
+    {
+      "question": "Who was in military unit which played the role of Air interdiction?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 3.85,
+      "sparql_generated": "SELECT ?unit WHERE {\n  ?unit dbp:role dbr:Air_interdiction .\n} LIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE { ?x <http://dbpedia.org/property/role> <http://dbpedia.org/resource/Air_interdiction> . ?uri <http://dbpedia.org/ontology/militaryUnit> ?x  . }"
+    },
+    {
+      "question": "Who are the current members of Insects vs Robots?",
+      "label": "PARTIAL",
+      "overlap": 0.2,
+      "time_s": 2.21,
+      "sparql_generated": "SELECT DISTINCT ?member ?label WHERE {\n  dbr:Insects_vs_Robots dbo:bandMember ?member .\n  ?member rdfs:label ?label .\n  FILTER(lang(?label) = \"en\")\n} LIMIT 20",
+      "sparql_ground_truth": " SELECT DISTINCT ?uri WHERE { <http://dbpedia.org/resource/Insects_vs_Robots> <http://dbpedia.org/property/currentMembers> ?uri } "
+    },
+    {
+      "question": "Is Ombla originate in Croatia?",
+      "label": "CORRECT",
+      "overlap": 1.0,
+      "time_s": 1.57,
+      "sparql_generated": "ASK WHERE {\n  dbr:Ombla dbo:country dbr:Croatia .\n}",
+      "sparql_ground_truth": "ASK WHERE { <http://dbpedia.org/resource/Ombla> <http://dbpedia.org/ontology/sourceMountain> <http://dbpedia.org/resource/Croatia> }"
+    },
+    {
+      "question": "Name the nationalteam of Trn Vit Hng ?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 3.52,
+      "sparql_generated": "SELECT ?nationalteam WHERE {\n  dbr:Vit dbo:country ?country .\n  ?country dbp:nationalTeam ?nationalteam .\n} LIMIT 20",
+      "sparql_ground_truth": " SELECT DISTINCT ?uri WHERE { <http://dbpedia.org/resource/Tr\u1ea7n_Vi\u1ec7t_H\u01b0\u01a1ng> <http://dbpedia.org/property/nationalteam> ?uri } "
+    },
+    {
+      "question": "Whihc uni did Joshua A. Siegel attend ?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 12.85,
+      "sparql_generated": "SELECT ?uni WHERE {\n  ?author rdfs:seeAlso dbr:Book_of_Joshua .\n  ?author dbp:name \"Joshua A. Siegel\" .\n  ?author dbp:almaMater ?uni .\n} LIMIT 20",
+      "sparql_ground_truth": " SELECT DISTINCT ?uri WHERE { <http://dbpedia.org/resource/Joshua_A._Siegel> <http://dbpedia.org/property/education> ?uri } "
+    },
+    {
+      "question": "How many books are written by the author who is famous for Novelas Ejemplares?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 2.28,
+      "sparql_generated": "SELECT (COUNT(DISTINCT ?book) AS ?count) WHERE {\n  dbr:Novelas_ejemplares dbo:author ?author .\n  ?book dbo:author ?author .\n}",
+      "sparql_ground_truth": "SELECT DISTINCT COUNT(?uri) WHERE { ?x <http://dbpedia.org/ontology/notableWork> <http://dbpedia.org/resource/Novelas_ejemplares> . ?uri <http://dbpedia.org/ontology/author> ?x  . ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Book>}"
+    },
+    {
+      "question": "Name the rivers who originate from Essex?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 4.72,
+      "sparql_generated": "SELECT DISTINCT ?river ?label WHERE {\n  ?river dbo:location dbr:Essex .\n  ?river a dbo:River .\n  ?river rdfs:label ?label .\n  FILTER(lang(?label) = \"en\")\n} LIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE {?uri <http://dbpedia.org/ontology/mouthPlace> <http://dbpedia.org/resource/Essex>  . ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/River>}"
+    },
+    {
+      "question": "Did Timm Gunn guest in Sunrise (HIMYM)?",
+      "label": "CORRECT",
+      "overlap": 1.0,
+      "time_s": 4.52,
+      "sparql_generated": "ASK WHERE {\n  dbr:Trey_Gunn dbp:extra ?extra .\n  ?extra dbp:caption \"Sunrise (HIMYM)\" .\n}",
+      "sparql_ground_truth": "ASK WHERE { <http://dbpedia.org/resource/Sunrise_(How_I_Met_Your_Mother)> <http://dbpedia.org/property/guests> <http://dbpedia.org/resource/Tim_Gunn> }"
+    },
+    {
+      "question": "to which university did both, the Stanford Cardinal and Gerald Reaven go?",
+      "label": "ERROR",
+      "overlap": 0,
+      "time_s": 43.45,
+      "sparql_generated": "SELECT ?university WHERE {\n  dbr:Stanford_Cardinal dbo:university ?university .\n  ?person dbo:almaMater ?university .\n  FILTER(?person = dbr:Gerald_Reaven)\n} LIMIT 20\n\nHowever, since dbr:Gerald_Reaven is not provided, we can't write the correct query. \n\nGiven the provided entities and relations, we can try to use the dbo:university predicate for dbr:Stanford_Cardinal and see if it returns any results for dbr:Gerald_Ford.\n\nSELECT ?university WHERE {\n  dbr:Stanford_Cardinal dbo:university ?university .\n  dbr:Gerald_Ford dbp:affiliations ?university .\n} LIMIT 20\n\nBut since there is no dbp:affiliations for dbr:Gerald_Ford, we can try a different approach.\n\nSELECT ?university WHERE {\n  dbr:Stanford_Cardinal dbo:university ?university .\n  dbr:Gerald_Ford dbo:university ?university .\n} LIMIT 20\n\nHowever, this query will not work because dbr:Gerald_Ford does not have a dbo:university predicate.\n\nLet's try a different approach.\n\nSELECT ?university WHERE {\n  dbr:Stanford_Cardinal dbo:university ?university .\n  ?person dbo:university ?university .\n  FILTER(?person = dbr:Gerald_Ford)\n} LIMIT 20\n\nBut since dbr:Gerald_Ford does not have a dbo:university predicate, this query will not work.\n\nThe correct entity for Gerald Reaven is not provided, and the provided entity dbr:Gerald_Ford does not have the correct relations.\n\nHowever, one possible approach is to use the dbo:university predicate for dbr:Stanford_Cardinal and try to find a different predicate for dbr:Gerald_Ford.\n\nSELECT ?university WHERE {\n  dbr:Stanford_Cardinal dbo:university ?university .\n  dbr:Gerald_Ford dbp:affiliations ?university .\n} LIMIT 20\n\nBut since there is no dbp:affiliations for dbr:Gerald_Ford, we can try a different approach.\n\nSELECT ?university WHERE {\n  dbr:Stanford_Cardinal dbo:university ?university .\n  dbr:Gerald_Ford dbo:almaMater ?university .\n} LIMIT 20\n\nHowever, this query will not work because dbr:Gerald_Ford does not have a dbo:almaMater predicate.\n\nThe correct query would be:\n\nSELECT ?university WHERE {\n  dbr:Stanford_Cardinal dbo:university ?university .\n  dbr:Gerald_Reaven dbo:almaMater ?university .\n} LIMIT 20\n\nBut since dbr:Gerald_Reaven is not provided, we can't write the correct query.\n\nSo the final query would be:\n\nSELECT ?university WHERE {\n  dbr:Stanford_Cardinal dbo:university ?university .\n  dbr:Gerald_Ford dbp:affiliations ?university .\n} LIMIT 20\n\nHowever, this query may still return 0 results if the entities and relations provided are not correct.\n\nThe correct entity for Gerald Reaven is not provided, and the provided entity dbr:Gerald_Ford does not have the correct relations.\n\nOne possible approach is to use the dbo:university predicate for dbr:Stanford_Cardinal and try to find a different predicate for dbr:Gerald_Ford.\n\nSELECT ?university WHERE {\n  dbr:Stanford_Cardinal dbo:university ?university .\n  dbr:Gerald_Ford dbo:university ?university .\n} LIMIT 20\n\nHowever, this query will not work because dbr:Gerald_Ford does not have a dbo:university predicate.\n\nLet's try a different approach.\n\nSELECT ?university WHERE {\n  dbr:Stanford_Cardinal dbo:university ?university .\n  ?person dbo:university ?university .\n  FILTER(?person = dbr:Gerald_Ford)\n} LIMIT 20\n\nBut since dbr:Gerald_Ford does not have a dbo:university predicate, this query will not work.\n\nThe correct entity for Gerald Reaven is not provided, and the provided entity dbr:Gerald_Ford does not have the correct relations.\n\nHowever, one possible approach is to use the dbo:university predicate for dbr:Stanford_Cardinal and try to find a different predicate for dbr:Gerald_Ford.\n\nSELECT ?university WHERE {\n  dbr:Stanford_Cardinal dbo:university ?university .\n  dbr:Gerald_Ford",
+      "sparql_ground_truth": " SELECT DISTINCT ?uri WHERE { <http://dbpedia.org/resource/Stanford_Cardinal> <http://dbpedia.org/ontology/university> ?uri. <http://dbpedia.org/resource/Gerald_Reaven> <http://dbpedia.org/ontology/institution> ?uri} "
+    },
+    {
+      "question": "Name the nearest city to David W. Brown House ?",
+      "label": "ERROR",
+      "overlap": 0,
+      "time_s": 5.81,
+      "sparql_generated": "SELECT ?city ?cityLabel WHERE {\n  dbr:Brown_House,_Munich dbo:location ?location .\n  ?location dbo:city ?city .\n  ?city rdfs:label ?cityLabel .\n  FILTER(lang(?cityLabel) = \"en\") .\n}\nLIMIT 20",
+      "sparql_ground_truth": " SELECT DISTINCT ?uri WHERE { <http://dbpedia.org/resource/David_W._Brown_House> <http://dbpedia.org/ontology/nearestCity> ?uri } "
+    },
+    {
+      "question": "where did Deion Sanders debut?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 2.33,
+      "sparql_generated": "SELECT ?debutLeague WHERE {\n  dbr:Deion_Sanders dbp:debutleague ?debutLeague .\n} LIMIT 20",
+      "sparql_ground_truth": " SELECT DISTINCT ?uri WHERE { <http://dbpedia.org/resource/Deion_Sanders> <http://dbpedia.org/property/debutteam> ?uri } "
+    },
+    {
+      "question": "What cities are nearer to Fuountain Lake Farm?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 4.81,
+      "sparql_generated": "SELECT DISTINCT ?city ?cityLabel WHERE {\n  dbr:Lake_Farm_Country_Park dbo:location ?location .\n  ?city dbo:location ?location .\n  ?city rdfs:label ?cityLabel .\n  FILTER(lang(?cityLabel) = \"en\") .\n} LIMIT 20",
+      "sparql_ground_truth": " SELECT DISTINCT ?uri WHERE { <http://dbpedia.org/resource/Fountain_Lake_Farm> <http://dbpedia.org/property/nearestCity> ?uri } "
+    },
+    {
+      "question": "Who are the characters of Batman Live?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 4.33,
+      "sparql_generated": "SELECT ?character WHERE {\n  dbr:Batman dbp:hero ?character .\n} LIMIT 20",
+      "sparql_ground_truth": " SELECT DISTINCT ?uri WHERE { <http://dbpedia.org/resource/Batman_Live> <http://dbpedia.org/property/characters> ?uri } "
+    },
+    {
+      "question": "Which artists trained in San Francisco Art Institute?",
+      "label": "PARTIAL",
+      "overlap": 0.408,
+      "time_s": 4.94,
+      "sparql_generated": "SELECT DISTINCT ?artist WHERE {\n  ?artist dbp:training dbr:San_Francisco_Art_Institute .\n  ?artist rdf:type dbo:Artist .\n} LIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE {?uri <http://dbpedia.org/property/training> <http://dbpedia.org/resource/San_Francisco_Art_Institute>  . ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Artist>}"
+    },
+    {
+      "question": "Name the country with currency as Aureus ?",
+      "label": "CORRECT",
+      "overlap": 1.0,
+      "time_s": 2.83,
+      "sparql_generated": "SELECT ?country WHERE {\n  ?country dbo:currency dbr:Aureus .\n} LIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE {?uri <http://dbpedia.org/ontology/currency> <http://dbpedia.org/resource/Aureus>  . ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Country>}"
+    },
+    {
+      "question": "what awards have been given to A. Peter Dewey?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 4.05,
+      "sparql_generated": "SELECT ?award WHERE {\n  dbr:John_Dewey dbp:author ?work .\n  ?work dbp:awards ?award .\n} LIMIT 20",
+      "sparql_ground_truth": " SELECT DISTINCT ?uri WHERE { <http://dbpedia.org/resource/A._Peter_Dewey> <http://dbpedia.org/ontology/award> ?uri } "
+    },
+    {
+      "question": "How many shows belong to the network one of whose sister station is Cartoonite?",
+      "label": "CORRECT",
+      "overlap": 1.0,
+      "time_s": 3.9,
+      "sparql_generated": "SELECT (COUNT(DISTINCT ?show) AS ?count) WHERE {\n  ?network dbo:sisterStation ?sisterStation .\n  ?sisterStation dbo:name \"Cartoonite\" .\n  ?show dbo:broadcaster ?network .\n}",
+      "sparql_ground_truth": "SELECT DISTINCT COUNT(?uri) WHERE { ?x <http://dbpedia.org/ontology/sisterStation> <http://dbpedia.org/resource/Cartoonito> . ?uri <http://dbpedia.org/property/network> ?x  . ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/TelevisionShow>}"
+    },
+    {
+      "question": "Muhammad Yunus has won how many awards?",
+      "label": "CORRECT",
+      "overlap": 1.0,
+      "time_s": 3.51,
+      "sparql_generated": "SELECT (COUNT(DISTINCT ?award) AS ?count) WHERE {\n  dbr:Muhammad_Yunus dbo:award ?award .\n}",
+      "sparql_ground_truth": "SELECT DISTINCT COUNT(?uri) WHERE { <http://dbpedia.org/resource/Muhammad_Yunus> <http://dbpedia.org/ontology/award> ?uri  . }"
+    },
+    {
+      "question": "List the associates of bands which have a label by Motown ?",
+      "label": "PARTIAL",
+      "overlap": 0.065,
+      "time_s": 4.51,
+      "sparql_generated": "SELECT DISTINCT ?associate WHERE {\n  ?band dbp:label dbr:Motown .\n  ?band dbo:associatedBand ?associate .\n} LIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE { ?x <http://dbpedia.org/ontology/recordLabel> <http://dbpedia.org/resource/Motown> . ?x <http://dbpedia.org/property/associatedActs> ?uri  . ?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Band>}"
+    },
+    {
+      "question": "Count the units garrisoned at Arlington County, Virginia.",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 4.38,
+      "sparql_generated": "SELECT (COUNT(DISTINCT ?unit) AS ?count) WHERE {\n  ?unit dbp:location dbr:Virginia .\n  ?unit dbo:location ?location .\n  ?location rdfs:label ?label .\n  FILTER(regex(?label, \"Arlington County\")) .\n}",
+      "sparql_ground_truth": "SELECT DISTINCT COUNT(?uri) WHERE {?uri <http://dbpedia.org/ontology/garrison> <http://dbpedia.org/resource/Arlington_County,_Virginia>  . ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/MilitaryUnit>}"
+    },
+    {
+      "question": "What is the faith of Kwai Chang Caine ?",
+      "label": "CORRECT",
+      "overlap": 1.0,
+      "time_s": 3.24,
+      "sparql_generated": "SELECT ?faith WHERE {\n  dbr:Kwai_Chang_Caine dbo:religion ?faith .\n} LIMIT 20",
+      "sparql_ground_truth": " SELECT DISTINCT ?uri WHERE { <http://dbpedia.org/resource/Kwai_Chang_Caine> <http://dbpedia.org/ontology/religion> ?uri } "
+    },
+    {
+      "question": "Which shows are from a company whose subsidiary is Viacom Productions?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 3.58,
+      "sparql_generated": "SELECT DISTINCT ?show WHERE {\n  ?company dbo:subsidiary dbr:Viacom_Productions .\n  ?show dbo:productionCompany ?company .\n} LIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE { ?x <http://dbpedia.org/ontology/subsidiary> <http://dbpedia.org/resource/Viacom_Productions> . ?uri <http://dbpedia.org/property/company> ?x  . ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/TelevisionShow>}"
+    },
+    {
+      "question": "How many religions are followed by the group whose architectural style can be seen on Sanggar Agung?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 3.42,
+      "sparql_generated": "SELECT (COUNT(DISTINCT ?religion) AS ?count) WHERE {\n  ?style dbo:architecturalStyle dbr:Sanggar_Agung .\n  ?group dbo:architecturalStyle ?style .\n  ?group dbo:religion ?religion .\n}",
+      "sparql_ground_truth": "SELECT DISTINCT COUNT(?uri) WHERE { <http://dbpedia.org/resource/Sanggar_Agung> <http://dbpedia.org/property/architecturalStyle> ?x . ?x <http://dbpedia.org/ontology/religion> ?uri  . ?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/EthnicGroup>}"
+    },
+    {
+      "question": "How many things are written in C++?",
+      "label": "ERROR",
+      "overlap": 0,
+      "time_s": 2.93,
+      "sparql_generated": "SELECT (COUNT(DISTINCT ?thing) AS ?count) WHERE {\n  ?thing dbo:programmingLanguage dbr:C++ .\n}",
+      "sparql_ground_truth": "SELECT DISTINCT COUNT(?uri) WHERE {?uri <http://dbpedia.org/property/programmingLanguage> <http://dbpedia.org/resource/C++>  . }"
+    },
+    {
+      "question": "Was Don't Bring Me Down recorded in West Germany?",
+      "label": "ERROR",
+      "overlap": 0,
+      "time_s": 3.72,
+      "sparql_generated": "ASK WHERE {\n  dbr:Don't_Bring_Me_Down dbp:country ?country .\n  ?country dbo:location dbr:West_Germany .\n}",
+      "sparql_ground_truth": "ASK WHERE { <http://dbpedia.org/resource/Don't_Bring_Me_Down> <http://dbpedia.org/property/recorded> <http://dbpedia.org/resource/West_Germany> }"
+    },
+    {
+      "question": "How many ideologies do the political party of Boonchu Rojanastien hold?",
+      "label": "CORRECT",
+      "overlap": 1.0,
+      "time_s": 2.64,
+      "sparql_generated": "SELECT (COUNT(DISTINCT ?ideology) AS ?count) WHERE {\n  dbr:Boonchu_Rojanastien dbp:party ?party .\n  ?party dbo:ideology ?ideology .\n}",
+      "sparql_ground_truth": "SELECT DISTINCT COUNT(?uri) WHERE { <http://dbpedia.org/resource/Boonchu_Rojanastien> <http://dbpedia.org/property/party> ?x . ?x <http://dbpedia.org/ontology/ideology> ?uri  . ?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/PoliticalParty>}"
+    },
+    {
+      "question": "What are the hubs of PLUS Helicopter Services, a highway helicopter unit of PLUS Expressways?",
+      "label": "CORRECT",
+      "overlap": 1.0,
+      "time_s": 2.81,
+      "sparql_generated": "SELECT ?hubs WHERE {\n  dbr:PLUS_Expressways dbp:hubs ?hubs .\n} LIMIT 20",
+      "sparql_ground_truth": " SELECT DISTINCT ?uri WHERE { <http://dbpedia.org/resource/PLUS_Expressways> <http://dbpedia.org/property/hubs> ?uri } "
+    },
+    {
+      "question": "Name the movies for which music was given by  Geoffrey Burgon and distributed by  Cinema International Corporation?",
+      "label": "CORRECT",
+      "overlap": 1.0,
+      "time_s": 4.66,
+      "sparql_generated": "SELECT DISTINCT ?movie ?movieLabel WHERE {\n  ?movie dbo:musicComposer dbr:Geoffrey_Burgon .\n  ?movie dbo:distributor dbr:Cinema_International_Corporation .\n  ?movie rdfs:label ?movieLabel .\n  FILTER(lang(?movieLabel) = \"en\")\n} LIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE {?uri <http://dbpedia.org/property/music> <http://dbpedia.org/resource/Geoffrey_Burgon> . ?uri <http://dbpedia.org/property/distributor> <http://dbpedia.org/resource/Cinema_International_Corporation>  . ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Film>}"
+    },
+    {
+      "question": "Is Henry David Thoreau interested in Politics?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 3.13,
+      "sparql_generated": "ASK WHERE {\n  dbr:Henry_David_Thoreau dbo:mainInterest \"Politics\" .\n}",
+      "sparql_ground_truth": "ASK WHERE { <http://dbpedia.org/resource/Henry_David_Thoreau> <http://dbpedia.org/property/mainInterests> <http://dbpedia.org/resource/Politics> }"
+    },
+    {
+      "question": "Name the TV shows with network as NBC and company as Paramount Television ?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 7.46,
+      "sparql_generated": "SELECT DISTINCT ?tvShow \nWHERE {\n  ?tvShow dbo:broadcastNetwork dbr:NBC .\n  ?tvShow dbo:owningCompany dbr:Paramount_Television_Studios .\n  ?tvShow rdfs:label ?label .\n  FILTER(lang(?label) = \"en\")\n} LIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE {?uri <http://dbpedia.org/ontology/network> <http://dbpedia.org/resource/NBC> . ?uri <http://dbpedia.org/property/company> <http://dbpedia.org/resource/Paramount_Television>  . ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/TelevisionShow>}"
+    },
+    {
+      "question": "Which license provider of MSX basic is also the designer of Language Integrated Query ?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 13.4,
+      "sparql_generated": "SELECT DISTINCT ?entity WHERE {\n  dbr:MSX dbo:developer ?developer .\n  ?developer dbo:knownFor ?knownFor .\n  ?knownFor dbo:designer ?entity .\n  ?entity dbo:designer dbr:Language_Integrated_Query .\n} LIMIT 20",
+      "sparql_ground_truth": " SELECT DISTINCT ?uri WHERE { <http://dbpedia.org/resource/Language_Integrated_Query> <http://dbpedia.org/ontology/designer> ?uri. <http://dbpedia.org/resource/MSX_BASIC> <http://dbpedia.org/property/license> ?uri} "
+    },
+    {
+      "question": "Who are the architect of the stadium whose one of the architect is louis D. Astorino ?",
+      "label": "PARTIAL",
+      "overlap": 0.25,
+      "time_s": 4.85,
+      "sparql_generated": "SELECT DISTINCT ?architect WHERE {\n  ?stadium dbo:architect dbr:Louis_D._Astorino .\n  ?stadium dbo:architect ?architect .\n  FILTER(?architect != dbr:Louis_D._Astorino) .\n} LIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE { ?x <http://dbpedia.org/property/architect> <http://dbpedia.org/resource/Louis_D._Astorino> . ?x <http://dbpedia.org/property/architect> ?uri  . }"
+    },
+    {
+      "question": "Who are the astronauts associated with NASA?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 8.3,
+      "sparql_generated": "SELECT DISTINCT ?astronaut WHERE {\n  ?astronaut dbp:occupation dbr:Astronaut .\n  ?astronaut dbo:affiliation dbr:NASA .\n  ?astronaut rdfs:label ?label .\n  FILTER(lang(?label) = \"en\")\n} LIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE {?uri <http://dbpedia.org/property/type> <http://dbpedia.org/resource/NASA>  . ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Astronaut>}"
+    },
+    {
+      "question": "Who is the partner of Rob Patterson?",
+      "label": "FAILED",
+      "overlap": 0.0,
+      "time_s": 2.58,
+      "sparql_generated": "SELECT ?partner WHERE {\n  dbr:Rob_Patterson dbo:partner ?partner .\n} LIMIT 20",
+      "sparql_ground_truth": "SELECT DISTINCT ?uri WHERE {?uri <http://dbpedia.org/property/partner> <http://dbpedia.org/resource/Rob_Patterson>  . }"
+    },
+    {
+      "question": "How many politicians are there from the city of Ganges?",
+      "label": "CORRECT",
+      "overlap": 1.0,
+      "time_s": 1.83,
+      "sparql_generated": "SELECT (COUNT(DISTINCT ?politician) AS ?count) WHERE {\n  ?politician dbo:birthPlace dbr:Ganges .\n  ?politician rdf:type dbo:Politician .\n}",
+      "sparql_ground_truth": "SELECT DISTINCT COUNT(?uri) WHERE { <http://dbpedia.org/resource/Ganges> <http://dbpedia.org/property/city> ?x . ?x <http://dbpedia.org/ontology/leaderName> ?uri  . }"
+    }
+  ]
+}

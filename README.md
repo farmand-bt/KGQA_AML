@@ -132,7 +132,7 @@ KGQA_AML/
 │   └── questions.txt         # Working and non-working questions list
 ├── .env.example             # Template for API keys
 ├── requirements.txt
-├── AUTHORS
+├── AUTHOR
 ├── LICENSE
 └── README.md
 ```
@@ -140,6 +140,20 @@ KGQA_AML/
 ## Dataset
 
 This project uses the [LC-QuAD](https://github.com/AskNowQA/LC-QuAD) dataset for evaluation. Since not all LC-QuAD questions work against the live DBpedia SPARQL endpoint, the dataset is filtered using `python -m src.filter_lcquad` to retain only questions that return valid results.
+
+After filtering: **546 out of 1000** LC-QuAD questions return results on the live DBpedia endpoint. The filtered set is saved in `data/lcquad_filtered.json`.
+
+A curated list of manually tested working and non-working questions is maintained in `data/questions.txt`.
+
+**Example working questions:**
+- Who founded Microsoft?
+- What language is spoken in Brazil?
+- Where was Marie Curie born?
+- When was the architect of the Eiffel Tower born? *(multi-hop)*
+
+**Example non-working questions:**
+- When did World War 2 end? *(missing data in DBpedia)*
+- Which country has the largest population in Europe? *(requires aggregation beyond current pipeline)*
 
 ## Links
 
