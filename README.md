@@ -14,25 +14,40 @@ You can access the Streamlit UI here.
 
 ```mermaid
 flowchart TD
-    Q["User Question (Natural Language)"]
-    Q --> EL
+    subgraph UI["Streamlit Web UI"]
+        Q["User Question"]
 
-    subgraph Pipeline
-        EL["1. Entity Linking\n<i>DBpedia Spotlight — cascading confidence</i>"]
-        RL["2. Relation Linking\n<i>1-hop neighborhood filtering + ranking</i>"]
-        SG["3. SPARQL Generation\n<i>LLM with few-shot examples</i>"]
-        QE["4. Query Execution\n<i>SPARQLWrapper → DBpedia endpoint</i>"]
-        AF["5. Answer Formatting\n<i>LLM / programmatic</i>"]
+        subgraph Pipeline
+            EL["<b>1. Entity Linking</b><br>DBpedia Spotlight<br><i>external & free API</i>"]
+            RL["<b>2. Relation Linking</b><br>Fetch 1-hop predicates<br><i>filter + rank by type</i>"]
+            SG["<b>3. SPARQL Generation</b><br>LLM builds query from<br><i>entities + relations + few-shot prompt</i>"]
+            QE["<b>4. Query Execution</b><br>SPARQLWrapper sends query<br><i>to DBpedia SPARQL endpoint</i>"]
+            AF["<b>5. Answer Formatting</b><br>Simple results: extract value directly programmatically<br><i>Complex results: LLM summarizes</i>"]
 
-        EL --> RL --> SG --> QE
-        QE -->|"empty results or error"| SG
-        QE -->|success| AF
+            EL --> RL --> SG --> QE
+            QE -->|"retry with error feedback"| SG
+            QE -->|"results found"| AF
+            QE -->|"all retries failed"| ERR["Error Message"]
+        end
+
+        Q --> EL
+        AF --> A["Answer"]
+        ERR --> A
     end
-
-    AF --> UI["Streamlit Web UI"]
 
     EL -. "entity URIs" .-> SG
     RL -. "candidate predicates" .-> SG
+
+    style UI fill:#f9f9f9,stroke:#2ecc71,color:#333
+    style Pipeline fill:#fff,stroke:#ccc
+    style Q fill:#4a90d9,stroke:#2c5f8a,color:#fff
+    style A fill:#2ecc71,stroke:#1a9c54,color:#fff
+    style EL fill:#f0f4ff,stroke:#4a90d9
+    style RL fill:#f0f4ff,stroke:#4a90d9
+    style SG fill:#fff3e0,stroke:#e67e22
+    style QE fill:#f0f4ff,stroke:#4a90d9
+    style AF fill:#fff3e0,stroke:#e67e22
+    style ERR fill:#ffebee,stroke:#e74c3c
 ```
 
 ### Key Design Decisions
