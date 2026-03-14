@@ -2,41 +2,37 @@
 
 A hybrid pipeline that answers natural language questions using the [DBpedia](https://www.dbpedia.org/) Knowledge Graph. Built as a course project for **Advanced Machine Learning** (WS 2025/26) at the Leuphana University of Lüneburg.
 
-**Author:** Farmand Bazdiditehrani
+**Author:** Farmand Bazdiditehrani (4005007)
 
-**Instructors:** Debayan Banerjee (Postdoc), Kai Moltzen (PhD student)
+**Instructors:** Dr. Debayan Banerjee and Kai Moltzen
+
+March 2026
+
+You can access the Streamlit UI here.
 
 ## Architecture
 
-```
-User Question (Natural Language)
-        │
-        ▼
-┌─────────────────────┐
-│  1. Question Analysis│  ← spaCy NLP preprocessing
-└────────┬────────────┘
-         ▼
-┌─────────────────────┐
-│  2. Entity Linking   │  ← DBpedia Spotlight (cascading confidence)
-└────────┬────────────┘
-         ▼
-┌─────────────────────┐
-│  3. Relation Linking │  ← 1-hop neighborhood filtering + ranking
-└────────┬────────────┘
-         ▼
-┌─────────────────────┐
-│  4. SPARQL Generation│  ← LLM with few-shot examples + retry
-└────────┬────────────┘
-         ▼
-┌─────────────────────┐
-│  5. Query Execution  │  ← SPARQLWrapper → DBpedia SPARQL endpoint
-└────────┬────────────┘
-         ▼
-┌─────────────────────┐
-│  6. Answer Formatting│  ← LLM / programmatic formatting
-└────────┬────────────┘
-         ▼
-    Streamlit Web UI
+```mermaid
+flowchart TD
+    Q["User Question (Natural Language)"]
+    Q --> EL
+
+    subgraph Pipeline
+        EL["1. Entity Linking\n<i>DBpedia Spotlight — cascading confidence</i>"]
+        RL["2. Relation Linking\n<i>1-hop neighborhood filtering + ranking</i>"]
+        SG["3. SPARQL Generation\n<i>LLM with few-shot examples</i>"]
+        QE["4. Query Execution\n<i>SPARQLWrapper → DBpedia endpoint</i>"]
+        AF["5. Answer Formatting\n<i>LLM / programmatic</i>"]
+
+        EL --> RL --> SG --> QE
+        QE -->|"empty results or error"| SG
+        QE -->|success| AF
+    end
+
+    AF --> UI["Streamlit Web UI"]
+
+    EL -. "entity URIs" .-> SG
+    RL -. "candidate predicates" .-> SG
 ```
 
 ### Key Design Decisions
