@@ -17,15 +17,15 @@ User Question (Natural Language)
 └────────┬────────────┘
          ▼
 ┌─────────────────────┐
-│  2. Entity Linking   │  ← DBpedia Spotlight (spacy-dbpedia-spotlight)
+│  2. Entity Linking   │  ← DBpedia Spotlight (cascading confidence)
 └────────┬────────────┘
          ▼
 ┌─────────────────────┐
-│  3. Relation Linking │  ← Filter to 1-hop neighborhood, rank candidates
+│  3. Relation Linking │  ← 1-hop neighborhood filtering + ranking
 └────────┬────────────┘
          ▼
 ┌─────────────────────┐
-│  4. SPARQL Generation│  ← LLM (GWDG SAIA API) assembles query
+│  4. SPARQL Generation│  ← LLM with few-shot examples + retry
 └────────┬────────────┘
          ▼
 ┌─────────────────────┐
@@ -33,11 +33,18 @@ User Question (Natural Language)
 └────────┬────────────┘
          ▼
 ┌─────────────────────┐
-│  6. Answer Formatting│  ← LLM formats results into readable answer
+│  6. Answer Formatting│  ← LLM / programmatic formatting
 └────────┬────────────┘
          ▼
     Streamlit Web UI
 ```
+
+### Key Design Decisions
+
+- **Relation Linking step** constrains the LLM to real DBpedia predicates from the entity's 1-hop neighborhood, reducing predicate hallucination.
+- **Cascading entity linking** tries spaCy pipeline first, then falls back to direct Spotlight API with lower confidence.
+- **SPARQL retry with error feedback** — if a generated query fails or returns empty results, the error is fed back to the LLM for self-correction.
+- **Hybrid answer formatting** — simple single-value results skip the LLM; complex results use LLM formatting.
 
 ## Tech Stack
 
@@ -81,11 +88,20 @@ User Question (Natural Language)
 
 ## Usage
 
+**Run the web app:**
 ```bash
 streamlit run app.py
 ```
 
-> **Note:** The application is currently under development.
+**Filter LC-QuAD dataset** (test which questions work on live DBpedia):
+```bash
+python -m src.filter_lcquad
+```
+
+**Evaluate pipeline accuracy** against filtered LC-QuAD:
+```bash
+python -m src.evaluate --limit 50
+```
 
 ## Project Structure
 
@@ -95,15 +111,18 @@ KGQA_AML/
 ├── src/
 │   ├── __init__.py
 │   ├── pipeline.py         # Main KGQA pipeline orchestrator
-│   ├── entity_linker.py    # DBpedia Spotlight entity linking
-│   ├── relation_linker.py  # Relation linking (1-hop filtering + ranking)
-│   ├── sparql_generator.py # LLM-based SPARQL query generation
+│   ├── entity_linker.py    # DBpedia Spotlight entity linking (cascading)
+│   ├── relation_linker.py  # 1-hop relation filtering + ranking
+│   ├── sparql_generator.py # LLM-based SPARQL generation (few-shot + retry)
 │   ├── sparql_executor.py  # Execute SPARQL against DBpedia
 │   ├── answer_formatter.py # Format raw results into NL answers
-│   └── llm_client.py       # GWDG SAIA API client wrapper
+│   ├── llm_client.py       # GWDG SAIA API client wrapper
+│   ├── filter_lcquad.py    # Filter LC-QuAD for working questions
+│   └── evaluate.py         # Evaluate pipeline against ground truth
 ├── data/
-│   ├── lcquad_filtered.json # Filtered LC-QuAD questions
-│   └── questions.txt        # Working and non-working questions list
+│   ├── LCQuAD-test-data.json # LC-QuAD test dataset
+│   ├── lcquad_filtered.json  # Filtered questions (generated)
+│   └── questions.txt         # Working and non-working questions list
 ├── .env.example             # Template for API keys
 ├── requirements.txt
 ├── AUTHORS
@@ -113,7 +132,7 @@ KGQA_AML/
 
 ## Dataset
 
-This project uses the [LC-QuAD](https://github.com/AskNowQA/LC-QuAD) dataset for evaluation. Since not all LC-QuAD questions work against the live DBpedia SPARQL endpoint, the dataset is filtered to retain only questions that return valid results.
+This project uses the [LC-QuAD](https://github.com/AskNowQA/LC-QuAD) dataset for evaluation. Since not all LC-QuAD questions work against the live DBpedia SPARQL endpoint, the dataset is filtered using `python -m src.filter_lcquad` to retain only questions that return valid results.
 
 ## Links
 
